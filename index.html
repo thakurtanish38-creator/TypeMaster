@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeMaster Elite | 2026</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- AUTH OVERLAY --- */
+        #auth-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.98);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-card {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            width: 480px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .auth-card input {
+            width: 100%; padding: 14px; margin: 10px 0;
+            border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;
+        }
+        .auth-card label { display: block; text-align: left; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-top: 10px; }
+
+        /* --- NAVBAR --- */
+        nav {
+            background: white;
+            padding: 25px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border-bottom: 2px solid #f1f5f9; /* Added a subtle line for extra CSS polish */
+        }
+        .logo-text { font-weight: 900; font-size: 1.8rem; color: var(--primary); letter-spacing: -1px; }
+        nav ul { list-style: none; display: flex; gap: 45px; margin: 0; }
+        nav ul li a { text-decoration: none; color: var(--text-main); font-weight: 700; transition: 0.3s; }
+        nav ul li a:hover { color: var(--primary); }
+        .user-pill { background: var(--primary); color: white; padding: 10px 25px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; }
+
+        /* --- FRONT PAGE --- */
+        header {
+            height: 100vh;
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .floating-logo {
+            font-size: 9rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-35px); }
+        }
+        header h1 { font-size: 6rem; margin: 0; font-weight: 900; letter-spacing: -3px; }
+        header p { font-size: 1.8rem; opacity: 0.9; margin-top: 15px; font-weight: 300; }
+
+        /* --- SECTIONS --- */
+        section { padding: 120px 10%; max-width: 1500px; margin: 0 auto; }
+        .section-heading { font-size: 4rem; font-weight: 900; text-align: center; margin-bottom: 70px; letter-spacing: -1px; }
+
+        /* --- SPEED TEST --- */
+        .test-box { background: white; padding: 70px; border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        #display-text { font-size: 2.2rem; color: #cbd5e1; margin-bottom: 50px; line-height: 1.5; font-weight: 500; }
+        .correct { color: var(--primary); border-bottom: 4px solid var(--primary); }
+        .incorrect { color: #f43f5e; background: #fff1f2; border-radius: 8px; }
+        #input-field { width: 100%; padding: 30px; font-size: 1.8rem; border: 4px solid #f1f5f9; border-radius: 20px; outline: none; }
+
+        .stats-row { display: flex; justify-content: space-between; align-items: center; margin-top: 50px; }
+        .stat-group { text-align: center; }
+        .stat-val { font-size: 3rem; font-weight: 900; color: var(--primary); display: block; }
+        .stat-lab { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+        /* --- ARCADE --- */
+        #arcade { background: #f1f5f9; border-radius: 80px 80px 0 0; }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
+        .game-card { background: white; padding: 45px; border-radius: 35px; text-align: center; transition: 0.4s; }
+        .game-card:hover { transform: translateY(-15px); box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
+        .action-zone { height: 160px; background: #f8fafc; margin: 25px 0; border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 900; color: var(--primary); border: 2px dashed #e2e8f0; }
+
+        /* --- RECORDS --- */
+        .table-card { background: white; padding: 50px; border-radius: 40px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 25px; color: var(--text-muted); border-bottom: 2px solid #f1f5f9; }
+        td { padding: 25px; border-bottom: 1px solid #f1f5f9; font-size: 1.2rem; font-weight: 600; }
+
+        /* --- FAQ --- */
+        #faq { background: white; }
+        .faq-container { max-width: 900px; margin: 0 auto; }
+        .faq-item { border-bottom: 1px solid #f1f5f9; padding: 30px 0; cursor: pointer; }
+        .faq-item h3 { margin: 0; font-size: 1.4rem; display: flex; justify-content: space-between; }
+        .faq-item p { display: none; margin-top: 20px; color: var(--text-muted); font-size: 1.1rem; }
+
+        /* --- FOOTER --- */
+        footer { background: #0f172a; color: white; padding: 120px 10% 60px 10%; }
+        .footer-main { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 80px; padding-bottom: 80px; border-bottom: 1px solid #1e293b; }
+        .footer-logo { font-size: 2.5rem; font-weight: 900; color: var(--primary); margin-bottom: 30px; }
+        .footer-col h4 { font-size: 1.3rem; margin-bottom: 30px; color: white; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col li { margin-bottom: 18px; color: #94a3b8; cursor: pointer; }
+        .footer-bottom { padding-top: 50px; display: flex; justify-content: space-between; color: #475569; }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 18px 35px; border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        .btn:hover { transform: scale(1.05); }
+        .btn-undo { background: #ef4444; display: none; }
+    </style>
+</head>
+<body>
+
+<div id="auth-overlay">
+    <div class="auth-card">
+        <div id="login-view">
+            <h2>Sign In</h2>
+            <input type="text" id="login-user" placeholder="Username">
+            <input type="password" id="login-pass" placeholder="Password">
+            <button class="btn" style="width:100%" onclick="attemptLogin()">Login</button>
+            <p><a href="#" onclick="showRecover()" style="color:var(--primary); font-weight:700;">Forgot Password?</a></p>
+            <p>New? <a href="#" onclick="toggleAuth('signup')">Create Account</a></p>
+        </div>
+        
+        <div id="signup-view" style="display:none">
+            <h2>Register</h2>
+            <input type="text" id="reg-user" placeholder="Username">
+            <input type="password" id="reg-pass" placeholder="Password (6+ chars)">
+            <label>RECOVERY QUESTIONS</label>
+            <input type="text" id="reg-q1" placeholder="Parent's Name?">
+            <input type="text" id="reg-q2" placeholder="School Name?">
+            <button class="btn" style="width:100%; margin-top:20px" onclick="attemptRegister()">Register</button>
+            <p><a href="#" onclick="toggleAuth('login')">Back</a></p>
+        </div>
+
+        <div id="recover-view" style="display:none">
+            <h2>Recover</h2>
+            <input type="text" id="recover-user" placeholder="Username">
+            <input type="text" id="ans-q1" placeholder="Parent's Name?">
+            <input type="text" id="ans-q2" placeholder="School Name?">
+            <input type="password" id="recover-new-pass" placeholder="New Password">
+            <button class="btn" style="width:100%" onclick="resetPassword()">Reset</button>
+            <p><a href="#" onclick="toggleAuth('login')">Cancel</a></p>
+        </div>
+    </div>
+</div>
+
+<nav>
+    <div class="logo-text">TypeMaster.</div>
+    <ul>
+        <li><a href="#test">Arena</a></li>
+        <li><a href="#arcade">Arcade</a></li>
+        <li><a href="#records">History</a></li>
+        <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="user-pill" id="user-display">Guest</div>
+</nav>
+
+<header>
+    <div class="floating-logo">⌨️</div>
+    <h1>TypeMaster</h1>
+    <p>Precision. Velocity. Mastery.</p>
+</header>
+
+<section id="test">
+    <h2 class="section-heading">Typing Arena</h2>
+    <div class="test-box">
+        <div id="display-text"></div>
+        <input type="text" id="input-field" placeholder="Start typing..." autofocus>
+        
+        <div class="stats-row" id="stats-area">
+            <div class="stat-group"><span class="stat-val" id="wpm">0</span><span class="stat-lab">WPM</span></div>
+            <div class="stat-group"><span class="stat-val" id="timer">60</span><span class="stat-lab">SEC</span></div>
+            <div class="stat-group"><span class="stat-val" id="accuracy">100</span><span class="stat-lab">ACC%</span></div>
+            <div>
+                <button class="btn" style="background:#64748b" onclick="toggleZen(true)">Zen Mode</button>
+                <button class="btn" style="background:#0f172a" onclick="location.reload()">Reset</button>
+            </div>
+        </div>
+        <center><button id="undo-zen" class="btn btn-undo" style="margin-top:20px" onclick="toggleZen(false)">Undo Zen (Show Stats)</button></center>
+    </div>
+</section>
+
+<section id="arcade">
+    <h2 class="section-heading">Arcade Zone</h2>
+    <div class="game-grid">
+        <div class="game-card"><h3>⚡ Reflex</h3><div class="action-zone" id="reflex-box" onclick="handleReflexClick()">READY</div><button class="btn" style="width:100%" onclick="startReflex()">Play</button></div>
+        <div class="game-card"><h3>🏎️ Dash</h3><div class="action-zone" id="dash-word">---</div><input type="text" id="dash-input" placeholder="Type..." style="display:none; width:100%; padding:10px;"><button class="btn" id="dash-btn" style="width:100%" onclick="startDash()">Start</button></div>
+        <div class="game-card"><h3>🧱 Breaker</h3><div class="action-zone" id="key-display">-</div><p>Score: <span id="key-score">0</span></p><button class="btn" style="width:100%" onclick="startKeyGame()">Start</button></div>
+        <div class="game-card"><h3>🎯 Precision</h3><div class="action-zone" id="precision-box">Type: <span id="p-target" style="color:red">?</span></div><p>Combo: <span id="p-score">0</span></p><button class="btn" style="width:100%" onclick="startPrecision()">Start</button></div>
+    </div>
+</section>
+
+<section id="records">
+    <h2 class="section-heading">Analytics</h2>
+    <div class="table-card"><table><thead><tr><th>Date</th><th>Challenge</th><th>Result</th></tr></thead><tbody id="records-body"></tbody></table></div>
+</section>
+
+<section id="faq">
+    <h2 class="section-heading">Frequently Asked Questions</h2>
+    <div class="faq-container">
+        <div class="faq-item" onclick="toggleFaq(this)"><h3>How is WPM calculated? <span>+</span></h3><p>WPM is calculated by taking the number of correctly typed characters, dividing by 5 (standard word length), and normalizing it over a 60-second interval.</p></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><h3>What is Zen Mode? <span>+</span></h3><p>Zen Mode hides the timer and stats to help you focus purely on the text without the pressure of a ticking clock, which often improves accuracy.</p></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><h3>How do I recover my account? <span>+</span></h3><p>Use the "Forgot Password" link on the login screen. You will need to provide your username and the answers to the security questions you set during registration.</p></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><h3>Can I use TypeMaster on mobile? <span>+</span></h3><p>While the site is responsive, it is optimized for physical keyboards to provide the most accurate speed measurement.</p></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><h3>Is my data shared with anyone? <span>+</span></h3><p>No. All your typing data and records are stored locally in your browser's secure storage and are only accessible via your ID.</p></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><h3>How can I reach 100+ WPM? <span>+</span></h3><p>Focus on accuracy first. Speed is a byproduct of muscle memory. Practice daily in our Arcade mode to improve finger reflex and key positioning.</p></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><h3>Is there an offline mode? <span>+</span></h3><p>Since the app uses LocalStorage, you can actually access your records as long as you are using the same browser, even if your connection drops.</p></div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-main">
+        <div class="footer-col"><div class="footer-logo">TypeMaster.</div><p>The global leader in typing performance analytics. We provide the tools for professionals to sharpen their digital edge through science-backed typing drills.</p></div>
+        <div class="footer-col"><h4>PLATFORM</h4><ul><li>Typing Arena</li><li>Arcade Mode</li><li>Rankings</li><li>Zen Engine</li></ul></div>
+        <div class="footer-col"><h4>SUPPORT</h4><ul><li>Account Recovery</li><li>Security FAQ</li><li>API Documentation</li><li>Privacy</li></ul></div>
+        <div class="footer-col"><h4>COMPANY</h4><ul><li>About Us</li><li>Careers</li><li>Press Kit</li><li>Contact</li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>&copy; 2026 TypeMaster Elite Global. All Rights Reserved.</span><span>Version 4.5.0 | High Stability Build</span></div>
+</footer>
+
+<script>
+    const getDB = () => JSON.parse(localStorage.getItem('tm_elite_26') || '{}');
+    const setDB = (d) => localStorage.setItem('tm_elite_26', JSON.stringify(d));
+    let activeUser = sessionStorage.getItem('tm_sess') || null;
+
+    window.onload = () => { if(activeUser) { closeOverlay(); setupUI(); } };
+
+    function toggleAuth(v) { 
+        document.getElementById('login-view').style.display = v === 'login' ? 'block' : 'none'; 
+        document.getElementById('signup-view').style.display = v === 'signup' ? 'block' : 'none'; 
+    }
+    function showRecover() { 
+        document.getElementById('login-view').style.display = 'none'; 
+        document.getElementById('recover-view').style.display = 'block'; 
+    }
+    function attemptRegister() {
+        const u = document.getElementById('reg-user').value.trim();
+        const p = document.getElementById('reg-pass').value;
+        const q1 = document.getElementById('reg-q1').value.trim().toLowerCase();
+        const q2 = document.getElementById('reg-q2').value.trim().toLowerCase();
+        const db = getDB();
+        if(u && p.length >= 6) { 
+            db[u] = { password: p, security: { q1, q2 }, records: [] }; 
+            setDB(db); alert("Registration Successful!"); toggleAuth('login'); 
+        } else { alert("Invalid Input (Password 6+ chars)"); }
+    }
+    function attemptLogin() {
+        const u = document.getElementById('login-user').value.trim();
+        const p = document.getElementById('login-pass').value;
+        const db = getDB();
+        if(db[u] && db[u].password === p) { 
+            activeUser = u; sessionStorage.setItem('tm_sess', u); closeOverlay(); setupUI(); 
+        } else { alert("Invalid Credentials"); }
+    }
+    function resetPassword() {
+        const u = document.getElementById('recover-user').value.trim();
+        const a1 = document.getElementById('ans-q1').value.trim().toLowerCase();
+        const a2 = document.getElementById('ans-q2').value.trim().toLowerCase();
+        const np = document.getElementById('recover-new-pass').value;
+        const db = getDB();
+        if(db[u] && db[u].security.q1 === a1 && db[u].security.q2 === a2) { 
+            db[u].password = np; setDB(db); alert("Password Changed!"); toggleAuth('login'); 
+        } else { alert("Security Answers Incorrect"); }
+    }
+
+    const quote = "The capacity to learn is a gift; the ability to learn is a skill; the willingness to learn is a choice. Mastery is the ultimate destination.";
+    let time = 60, run = false, tInt;
+
+    function initTest() { document.getElementById('display-text').innerHTML = quote.split('').map(c => `<span>${c}</span>`).join(''); }
+    function toggleZen(enable) {
+        document.getElementById('stats-area').style.display = enable ? 'none' : 'flex';
+        document.getElementById('undo-zen').style.display = enable ? 'block' : 'none';
+    }
+
+    document.getElementById('input-field').addEventListener('input', (e) => {
+        if(!run) { 
+            run = true; 
+            tInt = setInterval(() => { 
+                time--; document.getElementById('timer').innerText = time; 
+                if(time <= 0) { clearInterval(tInt); saveRecord("Arena", document.getElementById('wpm').innerText + " WPM"); alert("Time's up!"); run = false; } 
+            }, 1000); 
+        }
+        const spans = document.querySelectorAll('#display-text span');
+        const typed = e.target.value.split('');
+        let err = 0; 
+        spans.forEach((s, i) => { 
+            if(typed[i] == null) s.className = ''; 
+            else if(typed[i] === s.innerText) s.className = 'correct'; 
+            else { s.className = 'incorrect'; err++; } 
+        });
+        document.getElementById('wpm').innerText = Math.round((document.querySelectorAll('.correct').length / 5));
+        document.getElementById('accuracy').innerText = typed.length ? Math.round(((typed.length - err) / typed.length) * 100) : 100;
+    });
+
+    /* --- ARCADE LOGIC (FIXED) --- */
+    let refS; 
+    function startReflex() { 
+        const b = document.getElementById('reflex-box'); b.innerText = "..."; 
+        setTimeout(() => { b.innerText = "CLICK!"; b.style.background = "#22c55e"; refS = Date.now(); }, 1500 + Math.random() * 2000); 
+    }
+    function handleReflexClick() { 
+        const b = document.getElementById('reflex-box'); 
+        if(b.innerText === "CLICK!") { 
+            const d = Date.now() - refS; saveRecord("Reflex", d + "ms"); 
+            b.innerText = d + "ms"; b.style.background = "#f8fafc"; 
+        } 
+    }
+
+    let dS = 0; 
+    function startDash() { 
+        dS = 0; document.getElementById('dash-btn').style.display = 'none';
+        const di = document.getElementById('dash-input'); di.style.display = 'block'; di.focus(); 
+        nextDash(); 
+        setTimeout(() => { 
+            saveRecord("Dash", dS + " Pts"); di.style.display = 'none'; 
+            document.getElementById('dash-btn').style.display = 'block';
+            document.getElementById('dash-word').innerText = "Score: " + dS;
+        }, 10000); 
+    }
+    function nextDash() { document.getElementById('dash-word').innerText = ["focus","speed","logic","elite","type"][Math.floor(Math.random()*5)]; }
+    document.getElementById('dash-input').addEventListener('input', (e) => { 
+        if(e.target.value.trim() === document.getElementById('dash-word').innerText) { dS += 10; e.target.value = ""; nextDash(); } 
+    });
+
+    let kS = 0, kT = ""; 
+    function startKeyGame() { 
+        kS = 0; document.getElementById('key-score').innerText = 0; nextKey(); 
+        window.onkeydown = (e) => { if(e.key.toUpperCase() === kT) { kS++; document.getElementById('key-score').innerText = kS; nextKey(); } }; 
+        setTimeout(() => { window.onkeydown = null; saveRecord("Breaker", kS + " Keys"); document.getElementById('key-display').innerText = "FINISH"; }, 10000); 
+    }
+    function nextKey() { kT = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * 26)]; document.getElementById('key-display').innerText = kT; }
+
+    let pS = 0, pT = ""; 
+    function startPrecision() { 
+        pS = 0; document.getElementById('p-score').innerText = 0; nextP(); 
+        window.onkeypress = (e) => { if(e.key === pT) { pS++; document.getElementById('p-score').innerText = pS; nextP(); } else { pS = 0; document.getElementById('p-score').innerText = 0; } }; 
+        setTimeout(() => { window.onkeypress = null; saveRecord("Precision", pS + " Combo"); document.getElementById('precision-box').innerText = "DONE"; }, 15000); 
+    }
+    function nextP() { pT = "!@#$%^&*()"[Math.floor(Math.random() * 10)]; document.getElementById('p-target').innerText = pT; }
+
+    function setupUI() { document.getElementById('user-display').innerText = `👤 ${activeUser.toUpperCase()}`; loadRecords(); initTest(); }
+    function closeOverlay() { document.getElementById('auth-overlay').style.display = 'none'; }
+    function saveRecord(act, res) { 
+        const db = getDB(); db[activeUser].records.unshift({ date: new Date().toLocaleDateString(), activity: act, result: res }); 
+        setDB(db); loadRecords(); 
+    }
+    function loadRecords() { 
+        const db = getDB(); const recs = db[activeUser]?.records || []; 
+        document.getElementById('records-body').innerHTML = recs.map(r => `<tr><td>${r.date}</td><td>${r.activity}</td><td><b>${r.result}</b></td></tr>`).join(''); 
+    }
+    function toggleFaq(el) { const p = el.querySelector('p'); p.style.display = (p.style.display === 'block') ? 'none' : 'block'; }
+</script>
+</body>
+</html>
